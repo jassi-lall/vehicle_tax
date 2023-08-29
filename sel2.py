@@ -1,7 +1,3 @@
-"""
-TODO: optimise sleep() times. They are currently quite random
-"""
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -11,7 +7,7 @@ from bs4 import BeautifulSoup
 numberplate = "BL61LKE"
 #numberplate = input("Enter numberplate: ")
 
-driver = webdriver.Firefox()
+driver = webdriver.Chrome()
 driver.implicitly_wait(2)
 
 url = "https://vehicleenquiry.service.gov.uk/"
@@ -26,7 +22,15 @@ sleep(1)
 i.send_keys(Keys.RETURN)
 sleep(10)
 
-result = driver.page_source
-driver.close()
+driver.find_element(By.ID, "yes-vehicle-confirm").click()
+sleep(0.2)
+driver.find_element(By.ID, "capture_confirm_button").click()
 
-print(BeautifulSoup(result, 'html.parser').prettify())
+sleep(20)
+html = driver.page_source
+soup = BeautifulSoup(html, 'html.parser')
+dd = soup.find_all('dd')
+dt = soup.find_all('dt')
+
+for i in range(len(dt)):
+    print(dt[i].text, dd[i].text)
